@@ -40,6 +40,19 @@ class PersonDeserializer implements JSONDeserializer<Person> {
     );
   }
 }
+
+final data = {
+    "name": "George",
+    "age": 42,
+    "boss": {"name": "Arianne", "age": 55},
+    "children": [
+    {"name": "Nicky", "age": 11},
+    {"name": "Peter", "age": 13},
+    ]
+};
+
+final person = PersonDeserializer().fromJson(data);
+
 ```
 
 ## License
