@@ -9,7 +9,7 @@ void main() {
       "attribute1": "attribute1 value",
     };
 
-    final parsedObject = JSONObjectDeserializer().fromJson(object);
+    final parsedObject = ObjectDeserializer().fromJson(object);
 
     expect(object, equals(parsedObject));
   });
@@ -27,7 +27,7 @@ void main() {
   test('test json list deserialization', () {
     final dynamic object = ["data1", "data2", "data3"];
 
-    final parsedObject = JsonListDeserializer(StringDeserializer()).fromJson(object);
+    final parsedObject = ListDeserializer(StringDeserializer()).fromJson(object);
 
     expect(parsedObject, equals(["data1", "data2", "data3"]));
   });
@@ -36,7 +36,7 @@ void main() {
     final dynamic object1 = {"value": null};
     final dynamic object2 = {"value": "some value"};
 
-    final deserializer = JsonOptionalDeserializer(StringDeserializer());
+    final deserializer = OptionalDeserializer(StringDeserializer());
 
     final String? value1 = deserializer.fromJson(object1['value']);
     expect(value1, equals(null));
@@ -57,4 +57,45 @@ void main() {
     expect(
         () => deserializer.fromJson(object2['value']), throwsA(isA<JSONDeserializerException>()));
   });
+
+  test('test model deserialization', () {
+    final data = {
+      "name": "George",
+      "age": 42,
+      "boss": {"name": "Arianne", "age": 55},
+      "children": [
+        {"name": "Nicky", "age": 11},
+        {"name": "Peter", "age": 13},
+      ]
+    };
+
+    final person = PersonDeserializer().fromJson(data);
+    expect(person.name, equals('George'));
+    expect(person.boss?.children, equals(null));
+    expect(person.children?.length, equals(2));
+    expect(person.children?[0].name, equals('Nicky'));
+    expect(person.children?[1].name, equals('Peter'));
+  });
+}
+
+class Person {
+  final String name;
+  final int age;
+  final Person? boss;
+  final List<Person>? children;
+
+  Person({required this.name, required this.age, this.boss, this.children});
+}
+
+class PersonDeserializer implements JSONDeserializer<Person> {
+  @override
+  Person fromJson(json) {
+    return Person(
+      name: json['name'],
+      age: json['age'],
+      boss: OptionalDeserializer(PersonDeserializer()).fromJson(json['boss']),
+      children:
+          OptionalDeserializer(ListDeserializer(PersonDeserializer())).fromJson(json['children']),
+    );
+  }
 }
