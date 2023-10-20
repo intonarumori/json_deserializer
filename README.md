@@ -46,8 +46,8 @@ final data = {
     "age": 42,
     "boss": {"name": "Arianne", "age": 55},
     "children": [
-    {"name": "Nicky", "age": 11},
-    {"name": "Peter", "age": 13},
+        {"name": "Nicky", "age": 11},
+        {"name": "Peter", "age": 13},
     ]
 };
 
