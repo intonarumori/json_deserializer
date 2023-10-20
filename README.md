@@ -30,13 +30,13 @@ class Person {
 
 class PersonDeserializer implements JSONDeserializer<Person> {
   @override
-  Person fromJson(json) {
+  Person fromJSON(json) {
     return Person(
-      name: json['name'],
-      age: json['age'],
-      boss: OptionalDeserializer(PersonDeserializer()).fromJson(json['boss']),
+      name: StringDeserializer().fromJSON(json['name']),
+      age: IntDeserializer().fromJSON(json['age']),
+      boss: OptionalDeserializer(PersonDeserializer()).fromJSON(json['boss']),
       children:
-          OptionalDeserializer(ListDeserializer(PersonDeserializer())).fromJson(json['children']),
+          OptionalDeserializer(ListDeserializer(PersonDeserializer())).fromJSON(json['children']),
     );
   }
 }
@@ -51,7 +51,7 @@ final data = {
     ]
 };
 
-final person = PersonDeserializer().fromJson(data);
+final person = PersonDeserializer().fromJSON(data);
 
 ```
 

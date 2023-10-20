@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 abstract class JSONDeserializer<T> {
-  T fromJson(dynamic json);
+  T fromJSON(dynamic json);
 }
 
 /// An optional deserializer.
@@ -18,12 +18,12 @@ class OptionalDeserializer<T> implements JSONDeserializer<T?> {
   OptionalDeserializer(this.deserializer);
 
   @override
-  T? fromJson(dynamic json) {
+  T? fromJSON(dynamic json) {
     if (json == null) {
       return null;
     }
     try {
-      return deserializer.fromJson(json);
+      return deserializer.fromJSON(json);
     } catch (error) {
       rethrow;
     }
@@ -35,10 +35,10 @@ class ListDeserializer<T> implements JSONDeserializer<List<T>> {
   ListDeserializer(this.deserializer);
 
   @override
-  List<T> fromJson(dynamic json) {
+  List<T> fromJSON(dynamic json) {
     final list = json as List<dynamic>;
     try {
-      final result = list.map((e) => deserializer.fromJson(e)).toList();
+      final result = list.map((e) => deserializer.fromJSON(e)).toList();
       return result;
     } catch (error) {
       rethrow;
@@ -49,7 +49,7 @@ class ListDeserializer<T> implements JSONDeserializer<List<T>> {
 /// Returns the object as a `String`.
 class StringDeserializer implements JSONDeserializer<String> {
   @override
-  String fromJson(json) {
+  String fromJSON(json) {
     return json as String;
   }
 }
@@ -57,7 +57,7 @@ class StringDeserializer implements JSONDeserializer<String> {
 /// Returns the object as a `int`.
 class IntDeserializer implements JSONDeserializer<int> {
   @override
-  int fromJson(json) {
+  int fromJSON(json) {
     if (json is! int) {
       throw JSONDeserializerException('Value is not an int: $json');
     }
@@ -68,7 +68,7 @@ class IntDeserializer implements JSONDeserializer<int> {
 /// Returns the object as a `double`.
 class DoubleDeserializer implements JSONDeserializer<double> {
   @override
-  double fromJson(json) {
+  double fromJSON(json) {
     if (json is double) {
       return json;
     }
@@ -85,7 +85,7 @@ class DoubleDeserializer implements JSONDeserializer<double> {
 /// Perfect for debugging and seeing what the data looks like.
 class JSONEncodedStringDeserializer implements JSONDeserializer<String> {
   @override
-  String fromJson(json) {
+  String fromJSON(json) {
     return jsonEncode(json);
   }
 }
@@ -94,7 +94,7 @@ class JSONEncodedStringDeserializer implements JSONDeserializer<String> {
 // Useful for debugging.
 class ObjectDeserializer implements JSONDeserializer<dynamic> {
   @override
-  dynamic fromJson(json) {
+  dynamic fromJSON(json) {
     return json;
   }
 }

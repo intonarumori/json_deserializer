@@ -9,7 +9,7 @@ void main() {
       "attribute1": "attribute1 value",
     };
 
-    final parsedObject = ObjectDeserializer().fromJson(object);
+    final parsedObject = ObjectDeserializer().fromJSON(object);
 
     expect(object, equals(parsedObject));
   });
@@ -19,7 +19,7 @@ void main() {
       "attribute1": "attribute1 value",
     };
 
-    final parsedObject = JSONEncodedStringDeserializer().fromJson(object);
+    final parsedObject = JSONEncodedStringDeserializer().fromJSON(object);
 
     expect(parsedObject, equals('{"attribute1":"attribute1 value"}'));
   });
@@ -27,7 +27,7 @@ void main() {
   test('test json list deserialization', () {
     final dynamic object = ["data1", "data2", "data3"];
 
-    final parsedObject = ListDeserializer(StringDeserializer()).fromJson(object);
+    final parsedObject = ListDeserializer(StringDeserializer()).fromJSON(object);
 
     expect(parsedObject, equals(["data1", "data2", "data3"]));
   });
@@ -38,10 +38,10 @@ void main() {
 
     final deserializer = OptionalDeserializer(StringDeserializer());
 
-    final String? value1 = deserializer.fromJson(object1['value']);
+    final String? value1 = deserializer.fromJSON(object1['value']);
     expect(value1, equals(null));
 
-    final String? value2 = deserializer.fromJson(object2['value']);
+    final String? value2 = deserializer.fromJSON(object2['value']);
     expect(value2, equals('some value'));
   });
 
@@ -51,11 +51,11 @@ void main() {
 
     final deserializer = IntDeserializer();
 
-    final int value1 = deserializer.fromJson(object1['value']);
+    final int value1 = deserializer.fromJSON(object1['value']);
     expect(value1, equals(1));
 
     expect(
-        () => deserializer.fromJson(object2['value']), throwsA(isA<JSONDeserializerException>()));
+        () => deserializer.fromJSON(object2['value']), throwsA(isA<JSONDeserializerException>()));
   });
 
   test('test model deserialization', () {
@@ -69,7 +69,7 @@ void main() {
       ]
     };
 
-    final person = PersonDeserializer().fromJson(data);
+    final person = PersonDeserializer().fromJSON(data);
     expect(person.name, equals('George'));
     expect(person.boss?.children, equals(null));
     expect(person.children?.length, equals(2));
@@ -89,13 +89,13 @@ class Person {
 
 class PersonDeserializer implements JSONDeserializer<Person> {
   @override
-  Person fromJson(json) {
+  Person fromJSON(json) {
     return Person(
-      name: json['name'],
-      age: json['age'],
-      boss: OptionalDeserializer(PersonDeserializer()).fromJson(json['boss']),
+      name: StringDeserializer().fromJSON(json['name']),
+      age: IntDeserializer().fromJSON(json['age']),
+      boss: OptionalDeserializer(PersonDeserializer()).fromJSON(json['boss']),
       children:
-          OptionalDeserializer(ListDeserializer(PersonDeserializer())).fromJson(json['children']),
+          OptionalDeserializer(ListDeserializer(PersonDeserializer())).fromJSON(json['children']),
     );
   }
 }
